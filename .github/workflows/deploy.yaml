@@ -56,6 +56,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+      - name: Rename artifacts
+        run: |
+          cd artifacts
+          for target_dir in *; do
+            if [ -d "$target_dir" ]; then
+              cd "$target_dir"
+              for file in *; do
+                project=$(echo "$file" | cut -d'-' -f1)
+                component=$(echo "$file" | cut -d'-' -f2 | cut -d'.' -f1)
+                extension=$([[ "$file" == *.exe ]] && echo ".exe" || echo "")
+                new_name="../${project}-${{ steps.release_name.outputs.RELEASE_NAME }}-${target_dir}-${component}${extension}"
+                mv "$file" "$new_name"
+              done
+              cd ..
+              rmdir "$target_dir"
+            fi
+          done
       - name: Generate release name
         id: release_name
         run: echo "RELEASE_NAME=chilsonite-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
