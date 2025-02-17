@@ -27,12 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: stable
-          targets: ${{ matrix.target }}
-      - name: Install mingw-w64
-        run: sudo apt-get update && sudo apt-get install -y g++-mingw-w64-x86-64
+          target: ${{ matrix.target }}
       - name: Build
         run: cargo build --release --target ${{ matrix.target }} --manifest-path ${{ matrix.src_dir }}/Cargo.toml
       - name: Upload artifact
