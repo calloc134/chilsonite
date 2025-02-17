@@ -10,10 +10,10 @@ Chilsonite is a minimal rotating proxy written in Rust.
 
 ## Features
 
-- Written in Rust, making it fast and secure.
-- Uses WebSockets for tunneling, allowing it to bypass firewalls.
-- It is also possible to specify a specific agent to use the proxy.
-- You can also select a proxy by specifying a country code.
+- Fast and secure Rust implementation
+- WebSocket tunneling for firewall bypass
+- Country-based proxy selection
+- Can be used as a rotating proxy or with a specified proxy server
 
 ## Installation
 
