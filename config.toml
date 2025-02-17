@@ -1,0 +1,4 @@
+bind_address = "::"
+websocket_port = 3005
+socks5_port = 3006
+connect_timeout_seconds = 10 
