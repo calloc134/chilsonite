@@ -6,23 +6,15 @@ on:
     types: [created]
 jobs:
   release:
-    name: ${{ matrix.src_dir }} (${{ matrix.target }})
+    name: Build (${{ matrix.target }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: x86_64-pc-windows-gnu
-            src_dir: client
             os: windows
           - target: x86_64-unknown-linux-musl
-            src_dir: client
-            os: linux
-          - target: x86_64-pc-windows-gnu
-            src_dir: server
-            os: windows
-          - target: x86_64-unknown-linux-musl
-            src_dir: server
             os: linux
     steps:
       - uses: actions/checkout@v4
@@ -44,13 +36,14 @@ jobs:
           sudo apt-get install -y musl-tools
           rustup target add x86_64-unknown-linux-musl
       - name: Build
-        run: cargo build --release --target ${{ matrix.target }} --manifest-path ${{ matrix.src_dir }}/Cargo.toml
+        run: cargo build --release --target ${{ matrix.target }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.src_dir }}-${{ matrix.target }}
+          name: ${{ matrix.target }}
           path: |
-            ${{ matrix.src_dir }}/target/${{ matrix.target }}/release/${{ matrix.src_dir }}${{ matrix.os == 'windows' && '.exe' || '' }}
+            target/${{ matrix.target }}/release/garadama-client${{ matrix.os == 'windows' && '.exe' || '' }}
+            target/${{ matrix.target }}/release/cicada-server${{ matrix.os == 'windows' && '.exe' || '' }}
           if-no-files-found: error
           overwrite: true
 
