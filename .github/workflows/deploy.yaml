@@ -14,22 +14,50 @@ jobs:
         include:
           - target: x86_64-pc-windows-gnu
             src_dir: client
+            os: windows
           - target: x86_64-unknown-linux-musl
             src_dir: client
+            os: linux
           - target: x86_64-pc-windows-gnu
             src_dir: server
+            os: windows
           - target: x86_64-unknown-linux-musl
             src_dir: server
+            os: linux
     steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} --manifest-path ${{ matrix.src_dir }}/Cargo.toml
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.src_dir }}-${{ matrix.target }}
+          path: |
+            ${{ matrix.src_dir }}/target/${{ matrix.target }}/release/${{ matrix.src_dir }}${{ matrix.os == 'windows' && '.exe' || '' }}
+          if-no-files-found: error
+          overwrite: true
+
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
       - name: Generate release name
         id: release_name
-        run: echo "RELEASE_NAME=chilsonite-${{ matrix.src_dir }}-${{ matrix.target }}" >> $GITHUB_ENV
-      - uses: actions/checkout@master
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.4.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "RELEASE_NAME=chilsonite-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          RUSTTARGET: ${{ matrix.target }}
-          SRC_DIR: ${{ matrix.src_dir }}
-          ARCHIVE_NAME: ${{ steps.release_name.outputs.RELEASE_NAME }}
+          name: ${{ steps.release_name.outputs.RELEASE_NAME }}
+          files: |
+            artifacts/**/*
+          generate_release_notes: true
