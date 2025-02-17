@@ -17,6 +17,9 @@ use tokio_tungstenite::{
 use ureq::{self, Agent};
 use url::Url;
 
+// 接続先URL
+const DEFAULT_MASTER_URL: &str = "ws://127.0.0.1:3005";
+
 // 型エイリアス: WebSocketの送受信部分を分割した型
 type WsSink = SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>;
 type WsStream = SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>;
@@ -468,7 +471,7 @@ async fn main() -> Result<()> {
     let master_url = if args.len() > 1 {
         args[1].clone()
     } else {
-        "ws://127.0.0.1:3005".to_string()
+        DEFAULT_MASTER_URL.to_string()
     };
 
     info!("Starting GARADAMA agent with ID: {}", agent_id);
