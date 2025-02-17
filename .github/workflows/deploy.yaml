@@ -20,8 +20,6 @@ jobs:
             os: macos
           - target: aarch64-apple-darwin
             os: macos
-          - target: aarch64-linux-android
-            os: android
           - target: aarch64-unknown-linux-musl
             os: raspi
     steps:
@@ -47,10 +45,6 @@ jobs:
           sudo apt update
           sudo apt install -y musl-tools
           rustup target add x86_64-unknown-linux-musl
-      - name: Install Android toolchain
-        if: matrix.os == 'android'
-        run: |
-          rustup target add aarch64-linux-android
       - name: Install Raspi toolchain
         if: matrix.os == 'raspi'
         run: |
