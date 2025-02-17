@@ -48,8 +48,6 @@ jobs:
       - name: Install Android toolchain
         if: matrix.os == 'android'
         run: |
-          sudo apt update
-          sudo apt install -y android-ndk
           rustup target add aarch64-linux-android
       - name: Install Raspi toolchain
         if: matrix.os == 'raspi'
