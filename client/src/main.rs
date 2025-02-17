@@ -1,11 +1,11 @@
 // agent.rs
 use anyhow::Result;
 use base64;
+use common::Payload;
 use env_logger;
 use futures::stream::{SplitSink, SplitStream};
 use futures::{SinkExt, StreamExt};
 use log::{debug, error, info};
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::io::{AsyncReadExt, AsyncWriteExt, ReadHalf, WriteHalf};
@@ -20,66 +20,6 @@ use url::Url;
 // 型エイリアス: WebSocketの送受信部分を分割した型
 type WsSink = SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>;
 type WsStream = SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>;
-
-// ペイロード定義: マスターサーバーとの通信プロトコル
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(tag = "type", content = "payload")]
-enum Payload {
-    #[serde(rename = "init-request")]
-    InitRequest {
-        agent_id: String,
-        ip: String,
-        remote_host: String,
-        country_code: String,
-        city: String,
-        region: String,
-        asn: String,
-        asn_org: String,
-    },
-    #[serde(rename = "init-response")]
-    InitResponse {
-        success: bool,
-        message: Option<String>,
-    },
-    #[serde(rename = "init-error")]
-    InitError { error_message: String },
-    #[serde(rename = "connect-request")]
-    ConnectRequest {
-        request_id: String,
-        target_addr: String,
-        target_port: u16,
-        agent_id: Option<String>,
-        address_type: u8,
-    },
-    #[serde(rename = "connect-response")]
-    ConnectResponse { request_id: String, success: bool },
-    #[serde(rename = "data-chunk-request")]
-    DataRequestChunk {
-        request_id: String,
-        chunk_id: u32,
-        data: String,
-    },
-    #[serde(rename = "data-chunk-response")]
-    DataResponseChunk {
-        request_id: String,
-        chunk_id: u32,
-        data: String,
-    },
-    #[serde(rename = "data-response-transfer-complete")]
-    DataResponseTransferComplete {
-        request_id: String,
-        success: bool,
-        error_message: Option<String>,
-    },
-    #[serde(rename = "data-request-transfer-complete")]
-    DataRequestTransferComplete {
-        request_id: String,
-        success: bool,
-        error_message: Option<String>,
-    },
-    #[serde(rename = "client-disconnect")]
-    ClientDisconnect { request_id: String },
-}
 
 // グローバルなTCP接続マップ（接続確立時はTCPストリームを分割して書き込み側を保持）
 type ConnectionMap = Arc<Mutex<HashMap<String, WriteHalf<TcpStream>>>>;

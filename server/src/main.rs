@@ -1,6 +1,6 @@
-use crate::common::payload::Payload;
 use anyhow::{anyhow, Result};
 use base64;
+use common::Payload;
 use config::Config;
 use dashmap::DashMap;
 use env_logger;
@@ -9,7 +9,7 @@ use futures::{stream::SplitSink, SinkExt, StreamExt};
 use log::{debug, error, info};
 use rand;
 use rand::Rng;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use serde_json;
 use std::collections::HashMap;
 use std::net::{Ipv4Addr, SocketAddr};
