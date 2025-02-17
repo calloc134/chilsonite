@@ -36,8 +36,6 @@ jobs:
       - name: Install Windows toolchain
         if: matrix.os == 'windows'
         run: |
-          choco install -y visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
-          choco install -y windows-sdk-10.0
           rustup target add x86_64-pc-windows-msvc
       - name: Install MacOS toolchain
         if: matrix.os == 'macos'
