@@ -20,10 +20,10 @@ jobs:
             os: macos
           - target: aarch64-apple-darwin
             os: macos
-          - target: aarch64-unknown-linux-gnu
-            os: raspi
-          - target: aarch64-linux-android
-            os: android
+          # - target: aarch64-unknown-linux-gnu
+          #   os: raspi
+          # - target: aarch64-linux-android
+          #   os: android
     steps:
       - uses: actions/checkout@v4
       - name: Setup NDK
