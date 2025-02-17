@@ -16,9 +16,8 @@ Chilsonite は、Rust で書かれた最小限のローテーションプロキ�
 
 ## インストール
 
-実行ファイルをダウンロードしてください。
-
-Under Construction
+[Releases](https://github.com/calloc134/chilsonite/releases) から、各 OS 向けの実行ファイルをダウンロードしてください。
+インストールは不要です。
 
 ## 使い方
 
@@ -102,9 +101,10 @@ CICADA と WebSocket を用いて通信します。また、Socks5 プロキシ�
 
 ## ロードマップ
 
-- [ ] CICD の実装
+- [x] CICD の実装
 - [ ] ファイル構造の分離
 - [ ] deprecated なクレートの更新
+- [ ] Android、Raspberry Pi への対応
 - [ ] テストの追加
 
 ## ライセンス

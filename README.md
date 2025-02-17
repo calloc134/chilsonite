@@ -17,9 +17,8 @@ Chilsonite is a minimal rotating proxy written in Rust.
 
 ## Installation
 
-Please download the executable file.
-
-Under Construction
+Please download the executable file from [Releases](https://github.com/calloc134/chilsonite/releases) for each OS.
+No installation is required.
 
 ## Usage
 
@@ -104,9 +103,10 @@ It communicates with CICADA using WebSockets. It also accepts SOCKS5 proxy reque
 
 ## Roadmap
 
-- [ ] CI/CD implementation
+- [x] CI/CD implementation
 - [ ] Separation of file
 - [ ] Update deprecated crates
+- [ ] Support for Android and Raspberry Pi
 - [ ] Add tests
 
 ## License
