@@ -6,12 +6,20 @@ on:
     types: [created]
 jobs:
   release:
-    name: release ${{ matrix.target }}
+    name: ${{ matrix.src_dir }} (${{ matrix.target }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-musl]
+        include:
+          - target: x86_64-pc-windows-gnu
+            src_dir: client
+          - target: x86_64-unknown-linux-musl
+            src_dir: client
+          - target: x86_64-pc-windows-gnu
+            src_dir: server
+          - target: x86_64-unknown-linux-musl
+            src_dir: server
     steps:
       - uses: actions/checkout@master
       - name: Compile and release
@@ -20,3 +28,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           RUSTTARGET: ${{ matrix.target }}
+          SRC_DIR: ${{ matrix.src_dir }}
