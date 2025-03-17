@@ -57,4 +57,8 @@ pub enum Payload {
     },
     #[serde(rename = "client-disconnect")]
     ClientDisconnect { request_id: String },
+
+    // Added new variant for command messages
+    #[serde(rename = "command")]
+    Command { command: String },
 }
